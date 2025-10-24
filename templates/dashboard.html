@@ -1,0 +1,573 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+    .header {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
+    
+    .update-badge {
+        display: inline-block;
+        background: rgba(102, 126, 234, 0.1);
+        padding: 10px 20px;
+        border-radius: 50px;
+        margin-top: 10px;
+        color: #667eea;
+        font-weight: 600;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        background: var(--card-bg);
+        border-radius: 18px;
+        padding: 25px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        transition: transform 0.3s;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stat-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6em;
+        margin-bottom: 15px;
+        color: white;
+    }
+    
+    .stat-card h3 {
+        font-size: 0.85em;
+        color: var(--text-light);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+    }
+    
+    .stat-value {
+        font-size: 1.8em;
+        font-weight: 700;
+    }
+    
+    .chart-box {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+    }
+    
+    .chart-box h2 {
+        font-size: 1.4em;
+        margin-bottom: 25px;
+    }
+    
+    .main-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+    
+    .card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    }
+    
+    .card-title {
+        font-size: 1.3em;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    th, td {
+        padding: 14px;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    thead {
+        background: #f7fafc;
+    }
+    
+    th {
+        font-weight: 600;
+        color: var(--text-light);
+        font-size: 0.85em;
+        text-transform: uppercase;
+    }
+    
+    tbody tr:hover {
+        background: #f7fafc;
+    }
+    
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.75em;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-normal {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+    
+    .status-high {
+        background: #fed7d7;
+        color: #742a2a;
+    }
+    
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    label {
+        font-weight: 500;
+        color: var(--text-light);
+        font-size: 0.9em;
+    }
+    
+    select, textarea {
+        padding: 13px;
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        font-size: 1em;
+        font-family: 'Inter', sans-serif;
+        background: #f7fafc;
+    }
+    
+    select:focus, textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+    }
+    
+    textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+    
+    button[type="submit"] {
+        padding: 15px;
+        border-radius: 10px;
+        border: none;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-weight: 600;
+        font-size: 1em;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    
+    button[type="submit"]:hover {
+        transform: translateY(-2px);
+    }
+    
+    .ai-suggestion {
+        margin-top: 25px;
+        padding: 25px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+        border-left: 5px solid #667eea;
+        display: none;
+    }
+    
+    .ai-suggestion.show {
+        display: block;
+        animation: slideIn 0.5s ease;
+    }
+    
+    @keyframes slideIn {
+        from {opacity: 0; transform: translateY(20px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+    
+    .ai-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 18px;
+    }
+    
+    .ai-suggestion h4 {
+        font-size: 1.1em;
+        font-weight: 600;
+    }
+    
+    .priority-badge {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.75em;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    
+    .priority-urgent {
+        background: #fed7d7;
+        color: #742a2a;
+    }
+    
+    .priority-high {
+        background: #feebc8;
+        color: #7c2d12;
+    }
+    
+    .priority-medium {
+        background: #bee3f8;
+        color: #2c5282;
+    }
+    
+    .ai-content {
+        color: var(--text-light);
+        line-height: 1.8;
+        white-space: pre-line;
+        margin-bottom: 15px;
+    }
+    
+    .ai-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 2px solid #e2e8f0;
+    }
+    
+    .meta-item {
+        padding: 15px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: transform 0.3s;
+    }
+    
+    .meta-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .meta-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #667eea;
+        margin-bottom: 8px;
+    }
+    
+    .meta-item small {
+        display: block;
+        color: var(--text-light);
+        font-size: 0.75em;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .meta-item strong {
+        font-size: 1em;
+        color: var(--text);
+        display: block;
+    }
+    
+    .cost-breakdown {
+        margin-top: 20px;
+        padding: 20px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .cost-breakdown h5 {
+        color: var(--text);
+        margin-bottom: 12px;
+        font-size: 1em;
+    }
+    
+    .cost-breakdown p {
+        color: var(--text-light);
+        line-height: 1.8;
+        margin: 0;
+        font-size: 0.9em;
+    }
+    
+    @media (max-width: 768px) {
+        .main-grid, .ai-meta-grid {
+            grid-template-columns: 1fr;
+        }
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1><i class="fas fa-chart-line"></i> Real-Time Monitoring</h1>
+    <p style="color: var(--text-light);">Live IoT sensor data & AI-powered insights</p>
+    <div class="update-badge" id="update-time">
+        <i class="fas fa-sync-alt"></i> Connecting...
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+            <i class="fas fa-bolt"></i>
+        </div>
+        <h3>Total Power</h3>
+        <div class="stat-value" id="total-power">0 kW</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+        <h3>Peak Usage</h3>
+        <div class="stat-value" id="max-power">0 kW</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+            <i class="fas fa-arrow-down"></i>
+        </div>
+        <h3>Min Usage</h3>
+        <div class="stat-value" id="min-power">0 kW</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+            <i class="fas fa-building"></i>
+        </div>
+        <h3>Buildings</h3>
+        <div class="stat-value">5</div>
+    </div>
+</div>
+
+<div class="chart-box">
+    <h2><i class="fas fa-chart-bar"></i> Energy Consumption</h2>
+    <canvas id="energyChart" height="80"></canvas>
+</div>
+
+<div class="main-grid">
+    <div class="card">
+        <h3 class="card-title"><i class="fas fa-building"></i> Building Status</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Building</th>
+                    <th>Power (kW)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="data-table">
+                <tr><td colspan="3" style="text-align: center; padding: 30px;">Loading...</td></tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="card">
+        <h3 class="card-title"><i class="fas fa-robot"></i> AI Problem Solver</h3>
+        <form id="problemForm">
+            <div class="form-group">
+                <label><i class="fas fa-building"></i> Building</label>
+                <select id="building" required>
+                    <option value="">Choose...</option>
+                    <option value="Admin Block">Admin Block</option>
+                    <option value="Engineering Block">Engineering Block</option>
+                    <option value="Science Block">Science Block</option>
+                    <option value="Library">Library</option>
+                    <option value="Hostel Zone">Hostel Zone</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label><i class="fas fa-comment"></i> Problem</label>
+                <textarea id="problem" placeholder="e.g., High consumption, HVAC issues, lighting problems..." required></textarea>
+            </div>
+            
+            <button type="submit">
+                <i class="fas fa-magic"></i> Get AI Solution
+            </button>
+        </form>
+        
+        <div class="ai-suggestion" id="suggestionBox">
+            <div class="ai-header">
+                <h4 id="suggestionTitle">AI Solution</h4>
+                <span class="priority-badge" id="priorityBadge"></span>
+            </div>
+            <div class="ai-content" id="suggestionText"></div>
+            
+            <div class="ai-meta-grid">
+                <div class="meta-item">
+                    <div class="meta-icon"><i class="fas fa-piggy-bank"></i></div>
+                    <small>Est. Savings</small>
+                    <strong id="savings">-</strong>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-icon"><i class="fas fa-clock"></i></div>
+                    <small>Timeline</small>
+                    <strong id="timeline">-</strong>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <small>Implementation Cost</small>
+                    <strong id="cost">-</strong>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-icon"><i class="fas fa-chart-line"></i></div>
+                    <small>ROI Period</small>
+                    <strong id="roi">-</strong>
+                </div>
+            </div>
+            
+            <div class="cost-breakdown" id="costBreakdown">
+                <h5><i class="fas fa-list-ul"></i> Cost Breakdown</h5>
+                <p id="breakdownText">-</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const ctx = document.getElementById('energyChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Power (kW)',
+                data: [],
+                backgroundColor: [
+                    'rgba(102, 126, 234, 0.85)',
+                    'rgba(118, 75, 162, 0.85)',
+                    'rgba(240, 147, 251, 0.85)',
+                    'rgba(79, 172, 254, 0.85)',
+                    'rgba(0, 242, 254, 0.85)'
+                ],
+                borderRadius: 10,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {legend: {display: false}},
+            scales: {
+                y: {beginAtZero: true, grid: {color: 'rgba(0,0,0,0.05)'}},
+                x: {grid: {display: false}}
+            }
+        }
+    });
+    
+    const evtSource = new EventSource('/stream');
+    const tbody = document.getElementById('data-table');
+    const updateTime = document.getElementById('update-time');
+
+    evtSource.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        updateTime.innerHTML = '<i class="fas fa-check-circle"></i> ' + data.time;
+        
+        tbody.innerHTML = '';
+        const buildings = [];
+        const powers = [];
+        let total = 0, max = -Infinity, min = Infinity;
+        
+        data.readings.forEach(r => {
+            total += r.power;
+            if(r.power > max) max = r.power;
+            if(r.power < min) min = r.power;
+            
+            const statusClass = r.status === 'high' ? 'status-high' : 'status-normal';
+            const statusText = r.status === 'high' ? 'High' : 'Normal';
+            
+            tbody.innerHTML += '<tr><td><i class="fas fa-building"></i> ' + r.building + '</td><td><strong>' + r.power.toFixed(2) + '</strong></td><td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td></tr>';
+            
+            buildings.push(r.building);
+            powers.push(r.power);
+        });
+        
+        document.getElementById('total-power').textContent = data.total.toFixed(2) + ' kW';
+        document.getElementById('max-power').textContent = max.toFixed(2) + ' kW';
+        document.getElementById('min-power').textContent = min.toFixed(2) + ' kW';
+        
+        chart.data.labels = buildings;
+        chart.data.datasets[0].data = powers;
+        chart.update('none');
+    };
+    
+    document.getElementById('problemForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const building = document.getElementById('building').value;
+        const problem = document.getElementById('problem').value;
+        
+        try {
+            const response = await fetch('/report-problem', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({building, problem})
+            });
+            
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                const sug = result.suggestion;
+                document.getElementById('suggestionTitle').textContent = sug.title;
+                document.getElementById('suggestionText').textContent = sug.solution;
+                document.getElementById('priorityBadge').textContent = sug.priority;
+                document.getElementById('priorityBadge').className = 'priority-badge priority-' + sug.priority;
+                document.getElementById('savings').textContent = sug.estimated_savings;
+                document.getElementById('timeline').textContent = sug.implementation_time;
+                document.getElementById('cost').textContent = sug.implementation_cost;
+                document.getElementById('roi').textContent = sug.roi_period;
+                document.getElementById('breakdownText').textContent = sug.cost_breakdown;
+                document.getElementById('suggestionBox').classList.add('show');
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    });
+</script>
+{% endblock %}

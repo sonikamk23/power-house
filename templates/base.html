@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Energy Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --bg-1: #667eea;
+            --bg-2: #764ba2;
+            --bg-3: #f093fb;
+            --bg-4: #4facfe;
+            --card-bg: white;
+            --text: #2d3748;
+            --text-light: #718096;
+        }
+        
+        [data-theme="dark"] {
+            --bg-1: #1a202c;
+            --bg-2: #2d3748;
+            --bg-3: #4a5568;
+            --bg-4: #2d3748;
+            --card-bg: #2d3748;
+            --text: #e2e8f0;
+            --text-light: #cbd5e0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4));
+            background-size: 400% 400%;
+            animation: gradient 20s ease infinite;
+            padding: 20px;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+        
+        @keyframes gradient {
+            0%, 100% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+        }
+        
+        nav {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-links a {
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+        
+        .nav-links a.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .theme-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: transform 0.3s;
+        }
+        
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+            .nav-links a {
+                text-align: center;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav>
+        <div class="logo"><i class="fas fa-bolt"></i> Energy Hub</div>
+        <div class="nav-links">
+            <a href="/" class="{% if request.endpoint in ['index', 'dashboard'] %}active{% endif %}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a href="/alerts" class="{% if request.endpoint == 'alerts' %}active{% endif %}">
+                <i class="fas fa-bell"></i> Alerts
+            </a>
+            <a href="/calculator" class="{% if request.endpoint == 'calculator' %}active{% endif %}">
+                <i class="fas fa-calculator"></i> Calculator
+            </a>
+            <a href="/about" class="{% if request.endpoint == 'about' %}active{% endif %}">
+                <i class="fas fa-info-circle"></i> About
+            </a>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </nav>
+    
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                icon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-icon').className = 'fas fa-sun';
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

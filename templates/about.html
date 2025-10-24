@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-container {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
+    .about-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .about-header h1 {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+    }
+    
+    .section {
+        margin: 40px 0;
+    }
+    
+    .section h2 {
+        margin-bottom: 20px;
+        font-size: 1.8em;
+    }
+    
+    .section p {
+        color: var(--text-light);
+        line-height: 1.8;
+        margin-bottom: 15px;
+    }
+    
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin: 40px 0;
+    }
+    
+    .feature-card {
+        padding: 25px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        border-left: 4px solid #667eea;
+    }
+    
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+    
+    .feature-card h3 {
+        margin-bottom: 10px;
+    }
+    
+    .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .tech-badge {
+        padding: 10px 20px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <div class="about-header">
+        <h1><i class="fas fa-info-circle"></i> About Energy Dashboard</h1>
+        <p style="color: var(--text-light);">Smart Campus Energy Management System</p>
+    </div>
+    
+    <div class="section">
+        <h2>Overview</h2>
+        <p>
+            The Energy Consumption Dashboard is an advanced IoT-powered platform designed to monitor, 
+            analyze, and optimize energy usage across campus buildings in real-time. Using cutting-edge 
+            sensor technology and AI-driven analytics, the system provides actionable insights to reduce 
+            energy consumption, lower costs, and promote sustainability.
+        </p>
+    </div>
+    
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Real-Time Monitoring</h3>
+            <p>Live data streaming from IoT sensors with 3-second updates</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h3>AI-Powered Solutions</h3>
+            <p>Intelligent problem diagnosis with cost analysis and ROI</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <h3>Smart Alerts</h3>
+            <p>Automated notifications for high consumption</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-calculator"></i>
+            </div>
+            <h3>Savings Calculator</h3>
+            <p>Calculate potential savings from optimization</p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Key Features</h2>
+        <p><strong><i class="fas fa-check-circle" style="color: #48bb78;"></i> Real-Time Data:</strong> 
+        Monitor power consumption with live updates every 3 seconds.</p>
+        
+        <p><strong><i class="fas fa-check-circle" style="color: #48bb78;"></i> AI Problem Solver:</strong> 
+        Get intelligent solutions with implementation costs, ROI, and detailed breakdowns.</p>
+        
+        <p><strong><i class="fas fa-check-circle" style="color: #48bb78;"></i> Automated Alerts:</strong> 
+        Receive instant notifications for critical/warning conditions.</p>
+        
+        <p><strong><i class="fas fa-check-circle" style="color: #48bb78;"></i> Dark Mode:</strong> 
+        Toggle between light and dark themes with persistent preferences.</p>
+        
+        <p><strong><i class="fas fa-check-circle" style="color: #48bb78;"></i> Savings Calculator:</strong> 
+        Calculate potential cost savings from energy optimization strategies.</p>
+    </div>
+    
+    <div class="section">
+        <h2>Technology Stack</h2>
+        <p>Built with modern web technologies:</p>
+        <div class="tech-stack">
+            <span class="tech-badge"><i class="fab fa-python"></i> Python Flask</span>
+            <span class="tech-badge"><i class="fab fa-html5"></i> HTML5</span>
+            <span class="tech-badge"><i class="fab fa-css3-alt"></i> CSS3</span>
+            <span class="tech-badge"><i class="fab fa-js"></i> JavaScript</span>
+            <span class="tech-badge"><i class="fas fa-chart-bar"></i> Chart.js</span>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Use Cases</h2>
+        <p><strong>1. Campus Energy Management:</strong> Monitor and optimize across educational institutions.</p>
+        <p><strong>2. Building Facilities:</strong> Track consumption in commercial buildings.</p>
+        <p><strong>3. Sustainability Initiatives:</strong> Support green campus programs.</p>
+        <p><strong>4. Cost Reduction:</strong> Identify high-consumption areas and implement solutions.</p>
+    </div>
+    
+    <div class="section" style="text-align: center; padding: 30px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border-radius: 15px;">
+        <h2>Project Goals</h2>
+        <p>15-40% reduction in energy costs | Early detection of equipment malfunctions | Data-driven sustainability reporting | Improved operational efficiency</p>
+    </div>
+</div>
+{% endblock %}
