@@ -9,6 +9,7 @@ app = Flask(__name__)
 buildings = ["Admin Block", "Engineering Block", "Science Block", "Library", "Hostel Zone"]
 alerts_log = []
 historical_data = []
+COST_PER_KWH = 0.12
 
 def generate_data():
     global alerts_log, historical_data
@@ -22,10 +23,17 @@ def generate_data():
             total_power += power
             status = "high" if power > 120 else "normal"
             
+            hourly_cost = power * COST_PER_KWH
+            daily_cost = hourly_cost * 24
+            monthly_cost = daily_cost * 30
+            
             readings.append({
                 "building": b,
                 "power": power,
-                "status": status
+                "status": status,
+                "hourly_cost": round(hourly_cost, 2),
+                "daily_cost": round(daily_cost, 2),
+                "monthly_cost": round(monthly_cost, 2)
             })
             
             if power > 130:
@@ -33,24 +41,36 @@ def generate_data():
                     "building": b,
                     "power": power,
                     "timestamp": timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-                    "severity": "critical" if power > 140 else "warning"
+                    "severity": "critical" if power > 140 else "warning",
+                    "estimated_cost": round(hourly_cost, 2)
                 }
                 alerts_log.append(alert)
                 if len(alerts_log) > 50:
                     alerts_log.pop(0)
+        
+        total_hourly_cost = round(total_power * COST_PER_KWH, 2)
+        total_daily_cost = round(total_hourly_cost * 24, 2)
+        total_monthly_cost = round(total_daily_cost * 30, 2)
+        total_annual_cost = round(total_daily_cost * 365, 2)
         
         data = {
             "time": timestamp.strftime("%H:%M:%S"),
             "date": timestamp.strftime("%B %d, %Y"),
             "readings": readings,
             "total": round(total_power, 2),
-            "alerts": len([a for a in alerts_log if a.get('severity') == 'critical'])
+            "alerts": len([a for a in alerts_log if a.get('severity') == 'critical']),
+            "cost_rate": COST_PER_KWH,
+            "hourly_cost": total_hourly_cost,
+            "daily_cost": total_daily_cost,
+            "monthly_cost": total_monthly_cost,
+            "annual_cost": total_annual_cost
         }
         
         historical_data.append({
             "timestamp": timestamp.isoformat(),
             "data": readings,
-            "total": round(total_power, 2)
+            "total": round(total_power, 2),
+            "total_cost": total_hourly_cost
         })
         if len(historical_data) > 100:
             historical_data.pop(0)

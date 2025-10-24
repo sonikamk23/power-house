@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-{% block title %}About{% endblock %}
 
-{% block extra_css %}
+{% block content %}
 <style>
     .about-container {
         background: var(--card-bg);
@@ -81,9 +80,7 @@
         font-weight: 600;
     }
 </style>
-{% endblock %}
 
-{% block content %}
 <div class="about-container">
     <div class="about-header">
         <h1><i class="fas fa-info-circle"></i> About Energy Dashboard</h1>
@@ -139,11 +136,14 @@
         <p><strong><i class="fas fa-check-circle" style="color: #48bb78;"></i> Real-Time Data:</strong> 
         Monitor power consumption with live updates every 3 seconds.</p>
         
+        <p><strong><i class="fas fa-check-circle" style="color: #48bb78;"></i> Cost Analysis:</strong> 
+        View real-time costs with hourly, daily, monthly, and annual projections.</p>
+        
         <p><strong><i class="fas fa-check-circle" style="color: #48bb78;"></i> AI Problem Solver:</strong> 
         Get intelligent solutions with implementation costs, ROI, and detailed breakdowns.</p>
         
         <p><strong><i class="fas fa-check-circle" style="color: #48bb78;"></i> Automated Alerts:</strong> 
-        Receive instant notifications for critical/warning conditions.</p>
+        Receive instant notifications for critical/warning conditions with cost impact.</p>
         
         <p><strong><i class="fas fa-check-circle" style="color: #48bb78;"></i> Dark Mode:</strong> 
         Toggle between light and dark themes with persistent preferences.</p>

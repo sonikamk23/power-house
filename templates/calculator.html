@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Calculator{% endblock %}
 
-{% block extra_css %}
+{% block content %}
 <style>
     .calculator-container {
         background: var(--card-bg);
@@ -88,88 +87,6 @@
         font-size: 1.3em;
     }
 </style>
-{% endblock %}
 
-{% block content %}
 <div class="calculator-container">
-    <h1><i class="fas fa-calculator"></i> Savings Calculator</h1>
-    <p style="text-align: center; color: var(--text-light); margin-bottom: 30px;">
-        Calculate potential savings from optimization
-    </p>
-    
-    <form id="calcForm">
-        <div class="form-row">
-            <label><i class="fas fa-bolt"></i> Current Daily Usage (kWh)</label>
-            <input type="number" id="current_usage" step="0.1" required placeholder="e.g., 500">
-        </div>
-        
-        <div class="form-row">
-            <label><i class="fas fa-percentage"></i> Target Reduction (%)</label>
-            <input type="number" id="target_reduction" step="1" min="1" max="100" required placeholder="e.g., 20">
-        </div>
-        
-        <div class="form-row">
-            <label><i class="fas fa-dollar-sign"></i> Cost per kWh ($)</label>
-            <input type="number" id="cost_per_kwh" step="0.01" value="0.12" required>
-        </div>
-        
-        <button type="submit" class="calculate-btn">
-            <i class="fas fa-chart-line"></i> Calculate Savings
-        </button>
-    </form>
-    
-    <div class="results" id="results">
-        <h3>💰 Your Potential Savings</h3>
-        <div class="result-item">
-            <span>Reduced Daily Usage:</span>
-            <strong id="reduced_usage">-</strong>
-        </div>
-        <div class="result-item">
-            <span>Daily Savings (kWh):</span>
-            <strong id="savings_kwh">-</strong>
-        </div>
-        <div class="result-item">
-            <span>Monthly Savings:</span>
-            <strong id="monthly_savings">-</strong>
-        </div>
-        <div class="result-item">
-            <span>Annual Savings:</span>
-            <strong id="annual_savings">-</strong>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    document.getElementById('calcForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const data = {
-            current_usage: document.getElementById('current_usage').value,
-            target_reduction: document.getElementById('target_reduction').value,
-            cost_per_kwh: document.getElementById('cost_per_kwh').value
-        };
-        
-        try {
-            const response = await fetch('/calculate-savings', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-            
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                document.getElementById('reduced_usage').textContent = result.reduced_usage + ' kWh';
-                document.getElementById('savings_kwh').textContent = result.savings_kwh + ' kWh';
-                document.getElementById('monthly_savings').textContent = '$' + result.monthly_savings;
-                document.getElementById('annual_savings').textContent = '$' + result.annual_savings;
-                document.getElementById('results').classList.add('show');
-            }
-        } catch (error) {
-            alert('Error: ' + error.message);
-        }
-    });
-</script>
-{% endblock %}
+    <h1><i class="fas fa-calculator
